@@ -1,0 +1,62 @@
+name: CDK pull request
+
+concurrency: cdk
+
+on:
+  workflow_call:
+  pull_request:
+    paths:
+      - 'cdk-*/**'
+      - 'services/**'
+      - '.github/workflows/cdk-pull-request.yaml'
+
+env:
+  PRIMARY_REGION: us-east-2
+  SAML_AWS_ROLE_ARN: arn:aws:iam::746354538204:role/gh-account
+
+jobs:
+
+  globals:
+    runs-on: ubuntu-latest
+    outputs:
+      AWS_REGION: ${{ steps.AWS_REGION.outputs.value }}
+      SAML_AWS_ROLE_ARN: ${{ steps.SAML_AWS_ROLE_ARN.outputs.value }}
+    steps:
+      - id: AWS_REGION
+        run: echo "::set-output name=value::${{ env.PRIMARY_REGION }}"
+      - id: SAML_AWS_ROLE_ARN
+        run: echo "::set-output name=value::${{ env.SAML_AWS_ROLE_ARN }}"
+
+  yarn-test:
+
+    needs: globals
+    uses: torusinc/github-workflows/.github/workflows/reuse-cdk-test.yaml@v1
+    with:
+      AWS_REGION: ${{ needs.globals.outputs.AWS_REGION }}
+      CDK_FOLDER_NAME: cdk-account
+      SAML_AWS_ROLE_ARN: ${{ needs.globals.outputs.SAML_AWS_ROLE_ARN }}
+
+
+  integration-ai1:
+
+    needs: [ globals ]
+    uses: torusinc/github-workflows/.github/workflows/reuse-cdk-diff.yaml@v1
+    with:
+      AWS_REGION: ${{ needs.globals.outputs.AWS_REGION }}
+      CDK_FOLDER_NAME: cdk-account
+      CDK_PREFIX: ai1
+      ENVIRONMENT_LONG_NAME: "testqa"
+      SAML_AWS_ROLE_ARN: ${{ needs.globals.outputs.SAML_AWS_ROLE_ARN }}
+      TARGET_AWS_ACCOUNT_ROLE_ARN: "arn:aws:iam::206272298119:role/gha-app-deployer-1"
+
+  testqa-at1:
+
+    needs: [ globals ]
+    uses: torusinc/github-workflows/.github/workflows/reuse-cdk-diff.yaml@v1
+    with:
+      AWS_REGION: ${{ needs.globals.outputs.AWS_REGION }}
+      CDK_FOLDER_NAME: cdk-account
+      CDK_PREFIX: at1
+      ENVIRONMENT_LONG_NAME: "testqa"
+      SAML_AWS_ROLE_ARN: ${{ needs.globals.outputs.SAML_AWS_ROLE_ARN }}
+      TARGET_AWS_ACCOUNT_ROLE_ARN: "arn:aws:iam::126817074367:role/gha-app-deployer-1"

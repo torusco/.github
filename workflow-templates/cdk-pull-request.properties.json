@@ -1,0 +1,8 @@
+{
+    "name": "CDK Pull Request Workflow",
+    "description": "default workflow for a CDK related pull request",
+    "categories" : [
+        "aws-cdk",
+        "typescript"
+    ]
+}
