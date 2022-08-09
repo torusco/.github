@@ -30,7 +30,7 @@ jobs:
   yarn-test:
 
     needs: globals
-    uses: torusinc/github-workflows/.github/workflows/reuse-cdk-test.yaml@v1
+    uses: torusco/github-workflows/.github/workflows/reuse-cdk-test.yaml@v1
     with:
       AWS_REGION: ${{ needs.globals.outputs.AWS_REGION }}
       CDK_FOLDER_NAME: cdk-account
@@ -40,7 +40,7 @@ jobs:
   integration-ai1:
 
     needs: [ globals ]
-    uses: torusinc/github-workflows/.github/workflows/reuse-cdk-diff.yaml@v1
+    uses: torusco/github-workflows/.github/workflows/reuse-cdk-diff.yaml@v1
     with:
       AWS_REGION: ${{ needs.globals.outputs.AWS_REGION }}
       CDK_FOLDER_NAME: cdk-account
@@ -52,7 +52,7 @@ jobs:
   testqa-at1:
 
     needs: [ globals ]
-    uses: torusinc/github-workflows/.github/workflows/reuse-cdk-diff.yaml@v1
+    uses: torusco/github-workflows/.github/workflows/reuse-cdk-diff.yaml@v1
     with:
       AWS_REGION: ${{ needs.globals.outputs.AWS_REGION }}
       CDK_FOLDER_NAME: cdk-account
