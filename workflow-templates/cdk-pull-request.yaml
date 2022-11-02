@@ -11,7 +11,7 @@ on:
       - '.github/workflows/cdk-pull-request.yaml'
 
 env:
-  PRIMARY_REGION: us-east-2
+  AWS_REGION: us-east-2
   SAML_AWS_ROLE_ARN: arn:aws:iam::746354538204:role/gh-account
 
 jobs:
@@ -19,14 +19,13 @@ jobs:
   globals:
     runs-on: ubuntu-latest
     outputs:
-      AWS_REGION: ${{ steps.AWS_REGION.outputs.value }}
-      SAML_AWS_ROLE_ARN: ${{ steps.SAML_AWS_ROLE_ARN.outputs.value }}
+      AWS_REGION: ${{ steps.AWS_REGION.outputs.AWS_REGION }}
+      SAML_AWS_ROLE_ARN: ${{ steps.SAML_AWS_ROLE_ARN.outputs.SAML_AWS_ROLE_ARN }}
     steps:
       - id: AWS_REGION
-        run: echo "::set-output name=value::${{ env.PRIMARY_REGION }}"
+        run: echo "AWS_REGION=${{env.AWS_REGION}}" >> $GITHUB_OUTPUT
       - id: SAML_AWS_ROLE_ARN
-        run: echo "::set-output name=value::${{ env.SAML_AWS_ROLE_ARN }}"
-
+        run: echo "SAML_AWS_ROLE_ARN=${{env.SAML_AWS_ROLE_ARN}}" >> $GITHUB_OUTPUT
   yarn-test:
 
     needs: globals
